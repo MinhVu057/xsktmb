@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XSKT MB</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>XSKT MB</h1>
+    <nav>
+      <button type="button" data-page="play" class="active">Play</button>
+      <button type="button" data-page="rules">Rules</button>
+      <button type="button" data-page="account">Account</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="play" class="page">
+      <form id="ticket-form">
+        <label>
+          Ticket (5 digits)
+          <input id="ticket" inputmode="numeric" maxlength="5" pattern="\d{5}" placeholder="00000" required autocomplete="off">
+        </label>
+        <label>
+          Price (VND, min 10,000)
+          <input id="price" type="number" min="10000" step="1000" value="10000" required>
+        </label>
+        <button type="submit">Draw</button>
+      </form>
+      <p id="play-message" class="message" hidden></p>
+      <div id="board" hidden></div>
+    </section>
+
+    <section id="rules" class="page" hidden>
+      <p>Pick a 5-digit ticket and a price of at least 10,000 VND. The price is taken from your balance, then today’s numbers are drawn. A ticket can win more than one prize: each prize checks the last digits of your ticket.</p>
+      <table class="rules-table">
+        <thead>
+          <tr><th>Prize</th><th>Match</th><th>Count</th><th>Payout</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Special</td><td>5 digits</td><td>1</td><td>price × 20,000</td></tr>
+          <tr><td>First</td><td>5 digits</td><td>1</td><td>price × 2,000</td></tr>
+          <tr><td>Second</td><td>5 digits</td><td>2</td><td>price × 500</td></tr>
+          <tr><td>Third</td><td>5 digits</td><td>6</td><td>price × 200</td></tr>
+          <tr><td>Fourth</td><td>4 digits</td><td>4</td><td>price × 40</td></tr>
+          <tr><td>Fifth</td><td>4 digits</td><td>6</td><td>price × 20</td></tr>
+          <tr><td>Sixth</td><td>3 digits</td><td>3</td><td>price × 10</td></tr>
+          <tr><td>Seventh</td><td>2 digits</td><td>4</td><td>price × 4</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="account" class="page" hidden>
+      <dl class="stats">
+        <div><dt>Balance</dt><dd id="balance"></dd></div>
+        <div><dt>Deposit limit</dt><dd id="limit"></dd></div>
+      </dl>
+      <form id="deposit-form">
+        <label>
+          Deposit (VND)
+          <input id="deposit" type="number" min="1" step="1" required>
+        </label>
+        <button type="submit">Deposit</button>
+      </form>
+      <p id="account-message" class="message" hidden></p>
+      <form id="limit-form" hidden>
+        <p>That amount is above your current limit.</p>
+        <label>
+          New limit (VND)
+          <input id="new-limit" type="number" min="1" step="1" required>
+        </label>
+        <button type="submit">Set limit and deposit</button>
+        <button type="button" id="cancel-limit">Cancel</button>
+      </form>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
