@@ -18,20 +18,22 @@
 
   <main>
     <section id="play" class="page">
-      <form id="ticket-form">
-        <label>
-          Ticket (5 digits)
-          <input id="ticket" inputmode="numeric" maxlength="5" pattern="\d{5}" placeholder="00000" required autocomplete="off">
-        </label>
-        <label>
-          Price (VND, min 10,000)
-          <input id="price" type="number" min="10000" step="1000" value="10000" required>
-        </label>
-        <button type="submit">Draw</button>
-      </form>
-      <p id="play-message" class="message" hidden></p>
       <div class="play-results">
-        <div id="board" hidden></div>
+        <div class="play-main">
+          <form id="ticket-form">
+            <label>
+              Ticket (5 digits)
+              <input id="ticket" inputmode="numeric" maxlength="5" pattern="\d{5}" placeholder="00000" required autocomplete="off">
+            </label>
+            <label>
+              Price (VND, min 10,000)
+              <input id="price" type="number" min="10000" step="1000" value="10000" required>
+            </label>
+            <button type="submit">Draw</button>
+          </form>
+          <p id="play-message" class="message" hidden></p>
+          <div id="board" hidden></div>
+        </div>
         <aside id="frequency" aria-label="Most frequent numbers"></aside>
       </div>
     </section>
