@@ -9,11 +9,70 @@ const PRIZES = [
   { name: "Seventh", digits: 2, count: 4, mult: 4, cols: 4, accent: true },
 ];
 
+const FREQ_KEY = "xskt_freq";
+
 const state = {
   bank: 1000000,
   limit: 500000,
   pendingDeposit: null,
+  freq: loadFreq(),
 };
+
+function loadFreq() {
+  const empty = { 5: {}, 4: {}, 3: {}, 2: {} };
+  try {
+    const saved = JSON.parse(localStorage.getItem(FREQ_KEY) || "{}");
+    for (const digits of [5, 4, 3, 2]) {
+      if (saved[digits] && typeof saved[digits] === "object") empty[digits] = saved[digits];
+    }
+  } catch {
+    /* keep empty counts */
+  }
+  return empty;
+}
+
+function rememberDraw(byDigits) {
+  for (const digits of [5, 4, 3, 2]) {
+    for (const entry of byDigits[digits]) {
+      state.freq[digits][entry.value] = (state.freq[digits][entry.value] || 0) + 1;
+    }
+  }
+  localStorage.setItem(FREQ_KEY, JSON.stringify(state.freq));
+}
+
+function topNumbers(digits) {
+  return Object.entries(state.freq[digits])
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, 3);
+}
+
+function renderFrequency() {
+  const aside = document.getElementById("frequency");
+  aside.replaceChildren();
+  const title = document.createElement("h2");
+  title.textContent = "Most frequent";
+  const table = document.createElement("table");
+  table.className = "freq";
+  for (const digits of [5, 4, 3, 2]) {
+    const head = document.createElement("tr");
+    const th = document.createElement("th");
+    th.colSpan = 2;
+    th.textContent = `${digits} digits`;
+    head.append(th);
+    table.append(head);
+    const top = topNumbers(digits);
+    for (let i = 0; i < 3; i++) {
+      const tr = document.createElement("tr");
+      const number = document.createElement("td");
+      const count = document.createElement("td");
+      number.textContent = top[i] ? top[i][0] : "—";
+      count.textContent = top[i] ? String(top[i][1]) : "";
+      tr.append(number, count);
+      table.append(tr);
+    }
+  }
+  aside.append(title, table);
+}
 
 function vnd(n) {
   return `${Number(n).toLocaleString("en-US")} VND`;
@@ -129,7 +188,9 @@ document.getElementById("ticket-form").addEventListener("submit", (event) => {
     payout += win.mult * price;
   }
   state.bank += payout;
+  rememberDraw(byDigits);
   renderBoard(rows, ticket);
+  renderFrequency();
   if (wins.length === 0) {
     show(message, `Ticket ${ticket} did not win. Paid ${vnd(price)}. Balance ${vnd(state.bank)}.`, "lose");
   } else {
@@ -194,3 +255,4 @@ document.getElementById("cancel-limit").addEventListener("click", () => {
 });
 
 renderAccount();
+renderFrequency();

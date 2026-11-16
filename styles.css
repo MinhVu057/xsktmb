@@ -53,10 +53,42 @@ nav button.active {
 }
 
 main {
-  max-width: 720px;
+  max-width: 1040px;
   margin: 0 auto;
   padding: 1.25rem;
 }
+
+.play-results {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 15rem;
+  gap: 1rem;
+  align-items: start;
+}
+
+#board { grid-column: 1; }
+#frequency { grid-column: 2; }
+
+#frequency h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.freq {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+  font-variant-numeric: tabular-nums;
+}
+
+.freq th,
+.freq td {
+  border: 1px solid var(--line);
+  padding: 0.4rem 0.5rem;
+  text-align: left;
+}
+
+.freq th { background: var(--label); }
+.freq td:last-child { text-align: right; color: var(--muted); }
 
 form {
   display: flex;
@@ -169,6 +201,11 @@ form button[type="submit"] {
 .stats dd { margin: 0.15rem 0 0; font-size: 1.25rem; font-weight: 650; }
 
 #rules p { margin-top: 0; }
+
+@media (max-width: 640px) {
+  .play-results { grid-template-columns: 1fr; }
+  #board, #frequency { grid-column: auto; }
+}
 
 @media (max-width: 560px) {
   header { flex-direction: column; align-items: flex-start; }
