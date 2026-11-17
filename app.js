@@ -254,7 +254,7 @@ document.getElementById("ticket-form").addEventListener("submit", (event) => {
 
   state.bank -= price;
   const { rows, byDigits } = draw();
-  const wins = winsFor(ticket, byDigits
+  const wins = winsFor(ticket, byDigits);
   let payout = 0;
   for (const win of wins) {
     payout += win.mult * price;
