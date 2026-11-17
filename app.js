@@ -254,5 +254,22 @@ document.getElementById("cancel-limit").addEventListener("click", () => {
   show(document.getElementById("account-message"), "Deposit cancelled.");
 });
 
+const music = document.getElementById("music");
+const volume = document.getElementById("volume");
+
+function applyVolume() {
+  music.volume = Number(volume.value) / 100;
+}
+
+function startMusic() {
+  applyVolume();
+  music.play().catch(() => {});
+}
+
+volume.addEventListener("input", startMusic);
+document.addEventListener("pointerdown", startMusic, { once: true });
+applyVolume();
+startMusic();
+
 renderAccount();
 renderFrequency();

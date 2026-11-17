@@ -8,7 +8,14 @@
 </head>
 <body>
   <header>
-    <h1>XSKT MB</h1>
+    <div class="brand">
+      <h1>XSKT MB</h1>
+      <label class="volume">
+        Volume
+        <input id="volume" type="range" min="0" max="100" value="20">
+      </label>
+    </div>
+    <audio id="music" src="xskt_music.mp3" loop></audio>
     <nav>
       <button type="button" data-page="play" class="active">Play</button>
       <button type="button" data-page="rules">Rules</button>
