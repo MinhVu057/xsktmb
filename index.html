@@ -18,6 +18,7 @@
     <audio id="music" src="xskt_music.mp3" loop></audio>
     <nav>
       <button type="button" data-page="play" class="active">Play</button>
+      <button type="button" data-page="playground">Playground</button>
       <button type="button" data-page="rules">Rules</button>
       <button type="button" data-page="account">Account</button>
     </nav>
@@ -41,7 +42,33 @@
           <p id="play-message" class="message" hidden></p>
           <div id="board" hidden></div>
         </div>
-        <aside id="frequency" aria-label="Most frequent numbers"></aside>
+        <aside id="frequency" class="frequency-panel" aria-label="Most frequent numbers"></aside>
+      </div>
+    </section>
+
+    <section id="playground" class="page" hidden>
+      <div class="play-results">
+        <div class="play-main">
+          <form id="sim-form">
+            <label>
+              Ticket (5 digits)
+              <input id="sim-ticket" inputmode="numeric" maxlength="5" pattern="\d{5}" placeholder="00000" required autocomplete="off">
+            </label>
+            <label>
+              Draws
+              <input id="sim-count" type="number" min="1" max="100000" step="1" value="100" required>
+            </label>
+            <button type="submit">Simulate</button>
+          </form>
+          <p id="sim-message" class="message" hidden></p>
+          <table id="sim-prizes" class="rules-table" hidden>
+            <thead>
+              <tr><th>Prize</th><th>Times won</th><th>Payout</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <aside id="sim-frequency" class="frequency-panel" aria-label="Simulation frequency"></aside>
       </div>
     </section>
 
@@ -62,6 +89,7 @@
           <tr><td>Seventh</td><td>2 digits</td><td>4</td><td>price × 4</td></tr>
         </tbody>
       </table>
+      <p>Playground runs the same prizes for a 5-digit ticket, up to 100,000 times, at a fixed 10,000 VND per draw. Nothing is taken from the balance. The result shows how often each prize hits and the gain or loss. Its frequency table counts only that run and clears when you simulate again.</p>
     </section>
 
     <section id="account" class="page" hidden>

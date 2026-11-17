@@ -85,9 +85,9 @@ main {
 }
 
 .play-main { grid-column: 1; }
-#frequency { grid-column: 2; }
+.frequency-panel { grid-column: 2; }
 
-#frequency h2 {
+.frequency-panel h2 {
   margin: 0 0 0.25rem;
   font-size: 0.95rem;
 }
@@ -228,10 +228,11 @@ form button[type="submit"] {
 .stats dd { margin: 0.15rem 0 0; font-size: 1.25rem; font-weight: 650; }
 
 #rules p { margin-top: 0; }
+#rules table + p { margin-top: 1rem; }
 
 @media (max-width: 640px) {
   .play-results { grid-template-columns: 1fr; }
-  .play-main, #frequency { grid-column: auto; }
+  .play-main, .frequency-panel { grid-column: auto; }
 }
 
 @media (max-width: 560px) {

@@ -40,14 +40,13 @@ function rememberDraw(byDigits) {
   localStorage.setItem(FREQ_KEY, JSON.stringify(state.freq));
 }
 
-function topNumbers(digits) {
-  return Object.entries(state.freq[digits])
+function topNumbers(freq, digits) {
+  return Object.entries(freq[digits])
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
     .slice(0, 3);
 }
 
-function renderFrequency() {
-  const aside = document.getElementById("frequency");
+function renderFreqTable(aside, freq) {
   aside.replaceChildren();
   const title = document.createElement("h2");
   title.textContent = "Most frequent";
@@ -60,7 +59,7 @@ function renderFrequency() {
     th.textContent = `${digits} digits`;
     head.append(th);
     table.append(head);
-    const top = topNumbers(digits);
+    const top = topNumbers(freq, digits);
     for (let i = 0; i < 3; i++) {
       const tr = document.createElement("tr");
       const number = document.createElement("td");
@@ -72,6 +71,14 @@ function renderFrequency() {
     }
   }
   aside.append(title, table);
+}
+
+function renderFrequency() {
+  renderFreqTable(document.getElementById("frequency"), state.freq);
+}
+
+function emptyFreq() {
+  return { 5: {}, 4: {}, 3: {}, 2: {} };
 }
 
 function vnd(n) {
@@ -162,6 +169,71 @@ document.querySelectorAll("nav button").forEach((button) => {
   });
 });
 
+const SIM_PRICE = 10000;
+
+function countNumber(freq, digits, value) {
+  freq[digits][value] = (freq[digits][value] || 0) + 1;
+}
+
+document.getElementById("sim-form").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const message = document.getElementById("sim-message");
+  const ticket = document.getElementById("sim-ticket").value.trim();
+  const times = Number(document.getElementById("sim-count").value);
+  if (!/^\d{5}$/.test(ticket)) {
+    show(message, "Enter a 5-digit ticket, including leading zeros.");
+    return;
+  }
+  if (!Number.isInteger(times) || times < 1 || times > 100000) {
+    show(message, "Enter a number of draws from 1 to 100,000.");
+    return;
+  }
+
+  const prizeCounts = Object.fromEntries(PRIZES.map((prize) => [prize.name, 0]));
+  const freq = emptyFreq();
+  let payout = 0;
+  for (let n = 0; n < times; n++) {
+    const { rows, byDigits } = draw();
+    for (const digits of [5, 4, 3, 2]) {
+      for (const entry of byDigits[digits]) countNumber(freq, digits, entry.value);
+    }
+    const tailHits = new Set();
+    for (const row of rows) {
+      const tail = ticket.slice(-row.digits);
+      if (row.numbers.includes(tail) && !tailHits.has(row.digits)) {
+        tailHits.add(row.digits);
+        prizeCounts[row.name] += 1;
+        payout += row.mult * SIM_PRICE;
+      }
+    }
+  }
+
+  const spent = times * SIM_PRICE;
+  const net = payout - spent;
+  const summary = net >= 0
+    ? `Gain ${vnd(net)}`
+    : `Loss ${vnd(-net)}`;
+  show(
+    message,
+    `${times.toLocaleString("en-US")} draws at ${vnd(SIM_PRICE)}. Won ${vnd(payout)}, spent ${vnd(spent)}. ${summary}.`,
+    net >= 0 ? "win" : "lose",
+  );
+
+  const tbody = document.querySelector("#sim-prizes tbody");
+  tbody.replaceChildren();
+  for (const prize of PRIZES) {
+    const tr = document.createElement("tr");
+    for (const text of [prize.name, String(prizeCounts[prize.name]), vnd(prizeCounts[prize.name] * prize.mult * SIM_PRICE)]) {
+      const td = document.createElement("td");
+      td.textContent = text;
+      tr.append(td);
+    }
+    tbody.append(tr);
+  }
+  document.getElementById("sim-prizes").hidden = false;
+  renderFreqTable(document.getElementById("sim-frequency"), freq);
+});
+
 document.getElementById("ticket-form").addEventListener("submit", (event) => {
   event.preventDefault();
   const message = document.getElementById("play-message");
@@ -182,7 +254,7 @@ document.getElementById("ticket-form").addEventListener("submit", (event) => {
 
   state.bank -= price;
   const { rows, byDigits } = draw();
-  const wins = winsFor(ticket, byDigits);
+  const wins = winsFor(ticket, byDigits
   let payout = 0;
   for (const win of wins) {
     payout += win.mult * price;
@@ -273,3 +345,4 @@ startMusic();
 
 renderAccount();
 renderFrequency();
+renderFreqTable(document.getElementById("sim-frequency"), emptyFreq());
